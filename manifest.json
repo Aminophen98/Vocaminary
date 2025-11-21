@@ -1,8 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Vocaminary",
-  "update_url": "https://cdn.vocaminary.com/extension/updates.xml",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Transform YouTube learning with word-perfect subtitles that sync naturally with speech. Perfect for language learners.",
   "author": "Aminophen",
   "homepage_url": "https://vocaminary.com",
@@ -17,9 +16,7 @@
   "host_permissions": [
     "https://www.youtube.com/*",
     "https://app.vocaminary.com/*",
-    "https://api.vocaminary.com/*",
-    "http://localhost:5000/*",
-    "http://localhost:3000/*"
+    "https://api.vocaminary.com/*"
   ],
   
   "background": {
@@ -50,8 +47,7 @@
     },
     {
       "matches": [
-        "https://app.vocaminary.com/*",
-        "http://localhost:3000/*"
+        "https://app.vocaminary.com/*"
       ],
       "js": ["js/auth-bridge.js"]
     }

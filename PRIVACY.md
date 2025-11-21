@@ -148,7 +148,7 @@ We may update this policy as the extension evolves. Changes will be posted here 
 If you have questions about this privacy policy or want to request data deletion:
 
 - **GitHub Issues**: https://github.com/Aminophen98/YTS-1/issues
-- **Email**: [Your contact email - update this]
+- **Email**: aminophendev@gmail.com
 
 ## Open Source Transparency
 
