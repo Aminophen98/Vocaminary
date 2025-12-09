@@ -430,7 +430,8 @@ class SubtitleManager {
                             language: data.language || 'en',
                             type: isGenerated ? 'auto-generated' : 'manual',
                             source: 'vocaminary'
-                        }
+                        },
+                        from_cache: data.from_cache || false  // Pass through cache flag from API
                     };
                 } else {
                     // Parse error details from API response
