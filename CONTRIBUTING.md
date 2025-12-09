@@ -39,7 +39,7 @@ We want this project to be welcoming to everyone. Be respectful, constructive, a
 
 ### Reporting Bugs
 
-Found a bug? [Open an issue](https://github.com/Aminophen98/YTS-1/issues/new?template=bug_report.md) with:
+Found a bug? [Open an issue](https://github.com/Aminophen98/Vocaminary/issues/new?template=bug_report.md) with:
 
 - Clear, descriptive title
 - Steps to reproduce
@@ -50,7 +50,7 @@ Found a bug? [Open an issue](https://github.com/Aminophen98/YTS-1/issues/new?tem
 
 ### Suggesting Features
 
-Have an idea? [Request a feature](https://github.com/Aminophen98/YTS-1/issues/new?template=feature_request.md) with:
+Have an idea? [Request a feature](https://github.com/Aminophen98/Vocaminary/issues/new?template=feature_request.md) with:
 
 - Clear description of the feature
 - Why it would be useful
@@ -67,17 +67,20 @@ Have an idea? [Request a feature](https://github.com/Aminophen98/YTS-1/issues/ne
 ### Contributing Code
 
 1. **Find an issue to work on**
-   - Browse [open issues](https://github.com/Aminophen98/YTS-1/issues)
+
+   - Browse [open issues](https://github.com/Aminophen98/Vocaminary/issues)
    - Look for `good first issue` or `help wanted` labels
    - Comment to let us know you're working on it
 
 2. **Fork and clone the repo**
+
    ```bash
    git clone https://github.com/YOUR_USERNAME/YTS-1.git
    cd YTS-1
    ```
 
 3. **Create a branch**
+
    ```bash
    git checkout -b fix/issue-description
    # or
@@ -87,6 +90,7 @@ Have an idea? [Request a feature](https://github.com/Aminophen98/YTS-1/issues/ne
 4. **Make your changes** (see [Development Setup](#development-setup))
 
 5. **Test thoroughly**
+
    - Test on multiple YouTube videos
    - Test with both local server and cloud API
    - Check browser console for errors
@@ -107,12 +111,14 @@ Have an idea? [Request a feature](https://github.com/Aminophen98/YTS-1/issues/ne
 ### Setup Steps
 
 1. **Clone the repository**
+
    ```bash
-   git clone https://github.com/Aminophen98/YTS-1.git
+   git clone https://github.com/Aminophen98/Vocaminary.git
    cd YTS-1
    ```
 
 2. **Set up local server** (optional but recommended)
+
    ```bash
    cd server
    pip install yt-dlp flask flask-cors
@@ -120,6 +126,7 @@ Have an idea? [Request a feature](https://github.com/Aminophen98/YTS-1/issues/ne
    ```
 
 3. **Load extension in Chrome**
+
    - Go to `chrome://extensions/`
    - Enable Developer mode
    - Click "Load unpacked"
@@ -140,6 +147,7 @@ Before contributing code, please read:
 - **EventBus system** - How components communicate
 
 Key files to understand:
+
 - `extension/content/content-script.js` - Main entry point
 - `extension/content/core/StateManager.js` - Application state
 - `extension/content/services/SubtitleManager.js` - Caching system
@@ -176,20 +184,20 @@ _internalMethod() {}
 // ✅ Good: Clear, readable
 function processCaption(caption) {
   if (!caption || !caption.text) {
-    logger.warn('Invalid caption', caption);
+    logger.warn("Invalid caption", caption);
     return null;
   }
 
   return {
     start: caption.start,
     end: caption.end,
-    text: caption.text.trim()
+    text: caption.text.trim(),
   };
 }
 
 // ❌ Bad: No validation, unclear
 function processCaption(c) {
-  return {start: c.start, end: c.end, text: c.text.trim()};
+  return { start: c.start, end: c.end, text: c.text.trim() };
 }
 ```
 
@@ -198,10 +206,10 @@ function processCaption(c) {
 Use the centralized logger with emoji prefixes:
 
 ```javascript
-logger.debug('🔍', 'Detailed debug info'); // Verbose
-logger.info('📘', 'Normal operation');      // Info
-logger.warn('⚠️', 'Warning message');      // Warning
-logger.error('❌', 'Error occurred', error); // Error
+logger.debug("🔍", "Detailed debug info"); // Verbose
+logger.info("📘", "Normal operation"); // Info
+logger.warn("⚠️", "Warning message"); // Warning
+logger.error("❌", "Error occurred", error); // Error
 ```
 
 #### Error Handling
@@ -215,13 +223,13 @@ try {
   }
   return await response.json();
 } catch (error) {
-  logger.error('Failed to fetch data', error);
+  logger.error("Failed to fetch data", error);
   throw error; // Re-throw if caller needs to handle it
 }
 
 // ❌ Bad: Silent failures
 try {
-  return await fetch(url).then(r => r.json());
+  return await fetch(url).then((r) => r.json());
 } catch {}
 ```
 
@@ -229,25 +237,25 @@ try {
 
 ```javascript
 // ✅ Good: Use StateManager methods
-stateManager.setCurrentVideoId('abc123');
+stateManager.setCurrentVideoId("abc123");
 const videoId = stateManager.getCurrentVideoId();
 
 // ❌ Bad: Direct state mutation
-stateManager.state.currentVideoId = 'abc123'; // NEVER DO THIS
+stateManager.state.currentVideoId = "abc123"; // NEVER DO THIS
 ```
 
 #### Events
 
 ```javascript
 // ✅ Good: Use EventBus
-eventBus.emit('captionsLoaded', {videoId, captions});
-eventBus.on('videoPlay', (data) => {
-  logger.info('Video playing', data);
+eventBus.emit("captionsLoaded", { videoId, captions });
+eventBus.on("videoPlay", (data) => {
+  logger.info("Video playing", data);
 });
 
 // ✅ Clean up listeners when done
-const handlerId = eventBus.on('event', handler);
-eventBus.off('event', handlerId);
+const handlerId = eventBus.on("event", handler);
+eventBus.off("event", handlerId);
 ```
 
 ### File Organization
@@ -325,11 +333,13 @@ git commit -m "changes"
 When opening a PR, include:
 
 **Description**
+
 - What changes did you make?
 - Why are these changes needed?
 - Link to related issues
 
 **Testing**
+
 - How did you test this?
 - What videos did you test with?
 - Any edge cases covered?
@@ -337,6 +347,7 @@ When opening a PR, include:
 **Screenshots** (if UI changes)
 
 **Checklist**
+
 - [ ] Tested locally
 - [ ] No console errors
 - [ ] Documentation updated
@@ -359,10 +370,12 @@ When opening a PR, include:
 ### Critical Constraints
 
 1. **Script load order is sacred**
+
    - Never reorder scripts in manifest.json without understanding dependencies
    - Logger → EventBus → StateManager → Services → UI → Main
 
 2. **State updates MUST go through StateManager**
+
    ```javascript
    // ✅ Always use methods
    stateManager.setCurrentVideoId(id);
@@ -372,6 +385,7 @@ When opening a PR, include:
    ```
 
 3. **No external dependencies**
+
    - Extension uses vanilla JavaScript only
    - No npm packages, no jQuery, no frameworks
    - Exception: Python server can use pip packages
@@ -417,7 +431,7 @@ Before submitting, test:
 ### Ask Questions
 
 - Comment on the issue you're working on
-- Open a [Discussion](https://github.com/Aminophen98/YTS-1/discussions) (coming soon)
+- Open a [Discussion](https://github.com/Aminophen98/Vocaminary/discussions) (coming soon)
 - No question is too small!
 
 ---
@@ -425,6 +439,7 @@ Before submitting, test:
 ## Recognition
 
 Contributors will be:
+
 - Listed in project acknowledgments
 - Thanked in release notes
 - Credited in the AUTHORS file (coming soon)

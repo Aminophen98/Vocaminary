@@ -48,6 +48,9 @@ Desktop.ini
 CLAUDE.md
 .claude/
 
+# Development-only documentation
+docs/
+
 # Temporary files
 tmp/
 temp/

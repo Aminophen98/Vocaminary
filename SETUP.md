@@ -16,6 +16,7 @@ Complete installation instructions for the Vocaminary Chrome extension.
 ## Prerequisites
 
 ### Required
+
 - **Chrome, Edge, or Chromium-based browser** (version 88+)
 - **Internet connection** for fetching subtitles
 
@@ -30,13 +31,15 @@ Best for: Testing, development, or if you want full control
 #### Step 1: Download the Extension
 
 **Option A: Clone with Git**
+
 ```bash
-git clone https://github.com/yourusername/vocaminary.git
+git clone https://github.com/aminophen98/vocaminary.git
 cd vocaminary
 ```
 
 **Option B: Download ZIP**
-1. Go to https://github.com/yourusername/vocaminary
+
+1. Go to https://github.com/aminophen98/vocaminary
 2. Click **Code** → **Download ZIP**
 3. Extract the ZIP file to a permanent location (e.g., `C:\Extensions\vocaminary` or `~/Extensions/vocaminary`)
 
@@ -74,15 +77,18 @@ cd vocaminary
 ### Available Settings
 
 #### Subtitle Source
+
 - **Cloud API (Default)**: Uses shared subtitle cache for instant loading
 - **Local Server**: Uses your own subtitle extraction server
-  - Requires separate setup: [vocaminary-subtitle-server](https://github.com/yourusername/vocaminary-subtitle-server)
+  - Requires separate setup: [vocaminary-subtitle-server](https://github.com/aminophen98/vocaminary-subtitle-server)
 
 #### API Mode
+
 - **Public API**: Free, shared rate limits
 - **Own API**: Use your own OpenAI key for word definitions (coming soon)
 
 #### Advanced Settings
+
 - **Clear cache**: Remove all stored subtitle data
 - **View logs**: See error logs for debugging
 
@@ -93,16 +99,19 @@ cd vocaminary
 ### Cloud API (Default)
 
 The extension comes pre-configured to use a shared cloud API that provides:
+
 - Fast subtitle fetching
 - Shared cache across all users
 - No setup required
 
 **Pros:**
+
 - ✅ No setup required
 - ✅ Fast and reliable
 - ✅ Shared cache means popular videos load instantly
 
 **Cons:**
+
 - ❌ Relies on external service
 - ❌ Shared rate limits
 
@@ -110,20 +119,23 @@ The extension comes pre-configured to use a shared cloud API that provides:
 
 For maximum privacy and control, you can run your own subtitle extraction server.
 
-**Setup instructions**: Visit the [vocaminary-subtitle-server repository](https://github.com/yourusername/vocaminary-subtitle-server)
+**Setup instructions**: Visit the [vocaminary-subtitle-server repository](https://github.com/aminophen98/vocaminary-subtitle-server)
 
 **Pros:**
+
 - ✅ Full privacy - no data leaves your computer
 - ✅ No dependency on external APIs
 - ✅ Better control over rate limiting
 - ✅ Works offline (for cached videos)
 
 **Cons:**
+
 - ❌ Requires Python installation
 - ❌ Server must be running while using YouTube
 - ❌ Uses your IP address for YouTube requests
 
 Once you have the local server running:
+
 1. Click the extension icon
 2. Go to **Options**
 3. Select **"Local Server (yt-dlp)"** under Subtitle Source
@@ -138,6 +150,7 @@ Once you have the local server running:
 **Symptoms**: No overlay button, extension doesn't load
 
 **Solutions**:
+
 1. **Refresh the page** (F5)
 2. **Check if extension is enabled**:
    - Go to `chrome://extensions/`
@@ -158,21 +171,26 @@ Once you have the local server running:
 **Symptoms**: Button appears but subtitles won't load
 
 **Possible causes**:
+
 - ❌ Video doesn't have captions
 - ❌ Captions are disabled on this video
 - ❌ Rate limit exceeded
 - ❌ Network error
 
 **Solutions**:
+
 1. **Check if video has subtitles**:
+
    - Click the CC button on YouTube player
    - Try auto-generated captions
 
 2. **Try a different video**:
+
    - Use a popular video (they always have captions)
    - Example: https://www.youtube.com/watch?v=dQw4w9WgXcQ
 
 3. **Check rate limits**:
+
    - Wait 2-5 minutes
    - Try again
 
@@ -187,11 +205,14 @@ Once you have the local server running:
 **Symptoms**: Words appear too early or too late
 
 **Solutions**:
+
 1. **Check video playback rate**:
+
    - Extension works best at 1x speed
    - Slower/faster speeds may cause sync issues
 
 2. **Try refetching subtitles**:
+
    - Disable overlay
    - Clear cache (in options)
    - Re-enable overlay
@@ -199,7 +220,7 @@ Once you have the local server running:
 3. **Report the issue**:
    - Note the video ID
    - Check DevTools console for errors
-   - [Open an issue](https://github.com/yourusername/vocaminary/issues)
+   - [Open an issue](https://github.com/aminophen98/vocaminary/issues)
 
 ---
 
@@ -220,10 +241,13 @@ Once you have the local server running:
 **Symptoms**: Chrome tab uses lots of RAM
 
 **Solutions**:
+
 1. **Clear extension cache**:
+
    - Options → Clear cache
 
 2. **Limit cache size**:
+
    - Extension keeps last 3 videos in memory
    - IndexedDB cache: 7 days (automatic cleanup)
 
@@ -268,7 +292,7 @@ Enable verbose logging:
 2. Open DevTools (F12)
 3. Run in console:
    ```javascript
-   localStorage.setItem('YTS_DEBUG', 'true');
+   localStorage.setItem("YTS_DEBUG", "true");
    ```
 4. Reload page
 5. See detailed logs in console
@@ -279,8 +303,9 @@ Enable verbose logging:
 
 Still having issues?
 
-1. **Check existing issues**: https://github.com/yourusername/vocaminary/issues
+1. **Check existing issues**: https://github.com/aminophen98/vocaminary/issues
 2. **Open a new issue**: Include:
+
    - Your OS and Chrome version
    - Error messages from DevTools console
    - Video ID where it's failing
@@ -294,5 +319,5 @@ Still having issues?
 
 - ✅ Extension installed → [Read the documentation](docs/CLAUDE.md)
 - ✅ Want to contribute? → [See Contributing Guide](CONTRIBUTING.md)
-- ✅ Found a bug? → [Report it](https://github.com/yourusername/vocaminary/issues/new?template=bug_report.md)
-- ✅ Need local server? → [Set up vocaminary-subtitle-server](https://github.com/yourusername/vocaminary-subtitle-server)
+- ✅ Found a bug? → [Report it](https://github.com/aminophen98/vocaminary/issues/new?template=bug_report.md)
+- ✅ Need local server? → [Set up vocaminary-subtitle-server](https://github.com/aminophen98/vocaminary-subtitle-server)

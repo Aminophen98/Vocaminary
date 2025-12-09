@@ -3,7 +3,7 @@
 > Transform your YouTube learning experience with word-perfect subtitles that sync naturally with speech
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/yourusername/vocaminary/releases)
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/aminophen98/vocaminary/releases)
 [![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-green.svg)](https://www.google.com/chrome/)
 
 ![Vocaminary Demo](https://via.placeholder.com/800x400?text=Demo+Screenshot+-+Replace+with+actual+screenshot)
@@ -25,7 +25,7 @@
 ### 🌐 Multiple Subtitle Sources
 
 - **Cloud API** (default): Shared subtitle cache for instant loading
-- **Local yt-dlp server**: Extract subtitles on your own machine ([see server repo](https://github.com/yourusername/vocaminary-subtitle-server))
+- **Local yt-dlp server**: Extract subtitles on your own machine ([see server repo](https://github.com/aminophen98/vocaminary-subtitle-server))
 - Automatic fallback if one source fails
 
 ### 🔐 Privacy-Focused
@@ -49,7 +49,7 @@
 1. **Clone this repository**
 
    ```bash
-   git clone https://github.com/yourusername/vocaminary.git
+   git clone https://github.com/aminophen98/vocaminary.git
    cd vocaminary
    ```
 
@@ -64,7 +64,7 @@
 
    For privacy and better control, you can run your own subtitle extraction server:
 
-   - Visit the [vocaminary-subtitle-server repository](https://github.com/yourusername/vocaminary-subtitle-server)
+   - Visit the [vocaminary-subtitle-server repository](https://github.com/aminophen98/vocaminary-subtitle-server)
    - Follow the setup instructions there
    - Configure the extension to use your local server in Settings
 
@@ -96,12 +96,12 @@
 
 ## 🛠️ Technology Stack
 
-| Component     | Technology                         |
-| ------------- | ---------------------------------- |
-| **Extension** | Vanilla JavaScript (no frameworks) |
-| **Manifest**  | Chrome Manifest V3                 |
-| **Storage**   | Chrome Storage API + IndexedDB     |
-| **Backend**   | Cloud API or [Local Server](https://github.com/yourusername/vocaminary-subtitle-server) |
+| Component     | Technology                                                                             |
+| ------------- | -------------------------------------------------------------------------------------- |
+| **Extension** | Vanilla JavaScript (no frameworks)                                                     |
+| **Manifest**  | Chrome Manifest V3                                                                     |
+| **Storage**   | Chrome Storage API + IndexedDB                                                         |
+| **Backend**   | Cloud API or [Local Server](https://github.com/aminophen98/vocaminary-subtitle-server) |
 
 ### Architecture Highlights
 
@@ -136,8 +136,8 @@
 
 We welcome contributions! Here's how you can help:
 
-- 🐛 **Report bugs** - [Open an issue](https://github.com/yourusername/vocaminary/issues/new?template=bug_report.md)
-- 💡 **Suggest features** - [Request a feature](https://github.com/yourusername/vocaminary/issues/new?template=feature_request.md)
+- 🐛 **Report bugs** - [Open an issue](https://github.com/aminophen98/vocaminary/issues/new?template=bug_report.md)
+- 💡 **Suggest features** - [Request a feature](https://github.com/aminophen98/vocaminary/issues/new?template=feature_request.md)
 - 🔧 **Submit pull requests** - See our [Contributing Guide](CONTRIBUTING.md)
 - 📖 **Improve documentation** - Help make our docs clearer
 - 🌐 **Translate** - Add support for more languages
@@ -148,7 +148,7 @@ We welcome contributions! Here's how you can help:
 - YouTube DOM changes may require extension updates
 - Rate limiting: Aggressive usage may trigger YouTube blocks (we implement safeguards)
 
-[See all issues →](https://github.com/yourusername/vocaminary/issues)
+[See all issues →](https://github.com/aminophen98/vocaminary/issues)
 
 ## 📋 Requirements
 
@@ -184,7 +184,7 @@ We welcome contributions! Here's how you can help:
 
 - [x] Core subtitle overlay functionality
 - [x] Multi-layer caching system
-- [x] Local server support ([separate repository](https://github.com/yourusername/vocaminary-subtitle-server))
+- [x] Local server support ([separate repository](https://github.com/aminophen98/vocaminary-subtitle-server))
 - [x] Cloud API integration
 - [ ] Word-click definitions (in development)
 - [ ] Chrome Web Store publication (planned)
@@ -196,18 +196,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- **[yt-dlp](https://github.com/yt-dlp/yt-dlp)** - Subtitle extraction (used in [subtitle server](https://github.com/yourusername/vocaminary-subtitle-server))
+- **[yt-dlp](https://github.com/yt-dlp/yt-dlp)** - Subtitle extraction (used in [subtitle server](https://github.com/aminophen98/vocaminary-subtitle-server))
 - **YouTube** - For providing subtitle data
 - **The open-source community** - For inspiration and tools
 
 ## 📞 Contact & Support
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/vocaminary/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/vocaminary/discussions)
+- **Issues**: [GitHub Issues](https://github.com/aminophen98/vocaminary/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/aminophen98/vocaminary/discussions)
 
 ## 🔗 Related Projects
 
-- **[vocaminary-subtitle-server](https://github.com/yourusername/vocaminary-subtitle-server)** - Local subtitle extraction server (optional)
+- **[vocaminary-subtitle-server](https://github.com/aminophen98/vocaminary-subtitle-server)** - Local subtitle extraction server (optional)
 
 ## ⭐ Show Your Support
 

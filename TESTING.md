@@ -286,7 +286,7 @@ When you find a bug, please report it with:
 
 ### Template
 
-Use the [Bug Report template](https://github.com/Aminophen98/YTS-1/issues/new?template=bug_report.md) on GitHub.
+Use the [Bug Report template](https://github.com/Aminophen98/Vocaminary/issues/new?template=bug_report.md) on GitHub.
 
 ---
 
@@ -298,7 +298,7 @@ During testing, you might think of improvements! Please share:
 - What features are missing?
 - What's confusing or unclear?
 
-[Submit a feature request](https://github.com/Aminophen98/YTS-1/issues/new?template=feature_request.md)
+[Submit a feature request](https://github.com/Aminophen98/Vocaminary/issues/new?template=feature_request.md)
 
 ---
 
@@ -336,7 +336,7 @@ After testing, please share your overall experience:
 
 ### Where to Share Feedback
 
-- **GitHub Issues**: https://github.com/Aminophen98/YTS-1/issues
+- **GitHub Issues**: https://github.com/Aminophen98/Vocaminary/issues
 - **Email**: [Your email - update this]
 
 ---
@@ -358,8 +358,8 @@ Early testers will be:
 ## 📞 Need Help?
 
 - **Setup issues**: See [Setup Guide](SETUP.md)
-- **General questions**: [Open a question issue](https://github.com/Aminophen98/YTS-1/issues/new?template=question.md)
-- **Urgent bugs**: Email [Your email]
+- **General questions**: [Open a question issue](https://github.com/Aminophen98/Vocaminary/issues/new?template=question.md)
+- **Urgent bugs**: Email [aminophendev@gmail.com]
 
 ---
 

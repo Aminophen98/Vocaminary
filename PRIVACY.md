@@ -14,6 +14,7 @@ YouTube Subtitle Overlay takes your privacy seriously. This document explains wh
 ## Data Storage
 
 ### Local Storage (Chrome Storage API)
+
 The extension stores the following data **locally on your device**:
 
 - **Extension settings**: API mode (own/public), subtitle source preference, OpenAI API key (if provided)
@@ -26,6 +27,7 @@ The extension stores the following data **locally on your device**:
 **Retention**: Cached subtitles expire after 7 days. Settings persist until you uninstall the extension.
 
 ### IndexedDB
+
 The extension uses IndexedDB to cache subtitle data locally.
 
 - **What's stored**: Video IDs, subtitle text, word-level timings, language codes
@@ -36,32 +38,38 @@ The extension uses IndexedDB to cache subtitle data locally.
 ## Network Requests
 
 ### YouTube.com
+
 The extension runs on YouTube pages to detect videos and synchronize subtitles with playback.
 
 - **What we access**: Video player elements, current playback time, video ID from the URL
 - **What we send**: Nothing. The extension only reads from YouTube's page.
 
 ### Vocaminary API (app.vocaminary.com)
+
 Optional cloud service for faster subtitle loading and cross-device caching.
 
 **Endpoints used:**
+
 - `POST /api/subtitles/fetch-or-cache` - Check if subtitles are already cached server-side
 - `POST /api/subtitles/store-cache` - Share your cached subtitles with other users (anonymous)
 - `POST /api/subtitles/log-fetch` - Log fetch events for rate limiting and analytics
 - `POST /api/railway-health/log` - Monitor API health
 
 **Data sent:**
+
 - Video ID (e.g., "dQw4w9WgXcQ")
 - Language code (e.g., "en")
 - Authentication token (if you're logged in to Vocaminary)
 
 **Data received:**
+
 - Subtitle content with word-level timing
 - Cache metadata (source, type, timestamp)
 
 **IP logging**: The server may log IP addresses temporarily for rate limiting purposes.
 
 ### Local yt-dlp Server (localhost:5000)
+
 If you run the optional local Python server, all subtitle extraction happens on your own computer.
 
 - **No external network requests** - The server fetches from YouTube directly
@@ -69,6 +77,7 @@ If you run the optional local Python server, all subtitle extraction happens on 
 - **Your IP = Your YouTube rate limits**
 
 ### OpenAI API (Optional)
+
 If you provide your own OpenAI API key, the extension may send word definitions to OpenAI for AI-powered translations.
 
 - **What's sent**: Individual words clicked by you
@@ -79,12 +88,12 @@ If you provide your own OpenAI API key, the extension may send word definitions 
 
 ## Third-Party Services
 
-| Service | Purpose | Data Shared | Privacy Policy |
-|---------|---------|-------------|----------------|
-| YouTube | Video playback detection | None (read-only) | [YouTube Privacy](https://policies.google.com/privacy) |
-| Vocaminary API | Subtitle caching | Video IDs, auth tokens | See below |
-| OpenAI (optional) | AI definitions | Words you click | [OpenAI Privacy](https://openai.com/policies/privacy-policy) |
-| yt-dlp (local) | Subtitle extraction | None (runs locally) | [yt-dlp GitHub](https://github.com/yt-dlp/yt-dlp) |
+| Service           | Purpose                  | Data Shared            | Privacy Policy                                               |
+| ----------------- | ------------------------ | ---------------------- | ------------------------------------------------------------ |
+| YouTube           | Video playback detection | None (read-only)       | [YouTube Privacy](https://policies.google.com/privacy)       |
+| Vocaminary API    | Subtitle caching         | Video IDs, auth tokens | See below                                                    |
+| OpenAI (optional) | AI definitions           | Words you click        | [OpenAI Privacy](https://openai.com/policies/privacy-policy) |
+| yt-dlp (local)    | Subtitle extraction      | None (runs locally)    | [yt-dlp GitHub](https://github.com/yt-dlp/yt-dlp)            |
 
 ### Vocaminary API Privacy
 
@@ -100,30 +109,35 @@ The Vocaminary API is hosted on Vercel and operated by the extension developer.
 
 The extension requests the following Chrome permissions:
 
-| Permission | Why We Need It |
-|------------|----------------|
-| `activeTab` | Detect when you're on a YouTube video page |
-| `storage` | Save your settings and cached subtitles locally |
-| `scripting` | Inject the subtitle overlay into YouTube pages |
-| `nativeMessaging` | Communicate with the optional local yt-dlp server |
-| `https://www.youtube.com/*` | Run the extension only on YouTube |
-| `http://localhost:5000/*` | Connect to your local subtitle server |
+| Permission                  | Why We Need It                                    |
+| --------------------------- | ------------------------------------------------- |
+| `activeTab`                 | Detect when you're on a YouTube video page        |
+| `storage`                   | Save your settings and cached subtitles locally   |
+| `scripting`                 | Inject the subtitle overlay into YouTube pages    |
+| `nativeMessaging`           | Communicate with the optional local yt-dlp server |
+| `https://www.youtube.com/*` | Run the extension only on YouTube                 |
+| `http://localhost:5000/*`   | Connect to your local subtitle server             |
 
 ## Your Rights
 
 ### Access Your Data
+
 All data is stored locally in Chrome. To view it:
+
 1. Open Chrome DevTools on any YouTube page (F12)
 2. Go to **Application** → **Storage** → **Chrome Storage**
 3. Go to **Application** → **IndexedDB** → **subtitles**
 
 ### Delete Your Data
+
 - **Local data**: Uninstall the extension or clear Chrome's extension storage
 - **Server cache**: Subtitles are anonymous and auto-expire after 30 days. Contact us for early deletion.
 - **Vocaminary account**: Delete your account at app.vocaminary.com/settings (if you created one)
 
 ### Opt Out of Cloud Features
+
 You can disable server-side caching in the extension settings:
+
 1. Right-click the extension icon → **Options**
 2. Change **Subtitle Source** to "Local Server Only"
 3. This prevents any network requests to Vocaminary API
@@ -147,11 +161,11 @@ We may update this policy as the extension evolves. Changes will be posted here 
 
 If you have questions about this privacy policy or want to request data deletion:
 
-- **GitHub Issues**: https://github.com/Aminophen98/YTS-1/issues
+- **GitHub Issues**: https://github.com/Aminophen98/Vocaminary/issues
 - **Email**: aminophendev@gmail.com
 
 ## Open Source Transparency
 
-The full source code is available at https://github.com/Aminophen98/YTS-1
+The full source code is available at https://github.com/Aminophen98/Vocaminary
 
 You can review exactly what data is collected and how it's used by reading the code yourself.
