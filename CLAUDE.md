@@ -169,42 +169,47 @@ eventBus.registerMessageHandler('GET_OVERLAY_STATUS', (request, sender) => {
 #### 3. Multi-Layer Caching System
 **File:** `content/services/SubtitleManager.js` (most complex component, 878 lines)
 
-Three-layer cache minimizes API calls and ensures fast subtitle loading:
+**Architecture (Updated v2.0.0 - December 2025):**
+
+The caching system has been optimized to use vocabumin-api on your VPS instead of Vercel/Supabase. This provides longer retention (90 days vs 30 days) and removes unnecessary network hops.
 
 ```
 User clicks "Enable Overlay"
   ↓
-Layer 1: Memory Cache (Map)
+Layer 1: Memory Cache (Map) - Client-side
   - Speed: <1ms
   - Retention: Last 3 videos only
   - Cleared on page unload
   ↓ (cache miss)
-Layer 2: IndexedDB (local disk)
+Layer 2: IndexedDB (local disk) - Client-side
   - Speed: 20-50ms
   - Retention: 7 days
   - Survives browser restart
   ↓ (cache miss)
-Layer 3: Server Cache (Cloud API)
-  - Speed: 100-200ms
-  - Shared across all users
-  - Popular videos cached here
-  ↓ (cache miss)
-Layer 4: Rate Limit Check
-  - Client-side throttling
-  - Prevents YouTube API abuse
+Layer 3: Rate Limit Check (yourvocab backend)
+  - Checks: 20 requests/day limit
+  - Does NOT fetch/store subtitles anymore
+  - Just validates rate limits
   ↓ (allowed)
-Layer 5: Fresh Fetch
+Layer 4: Vocabumin-API (VPS) - 90-day SQLite cache
+  - Speed: 50-100ms if cached
+  - Retention: 90 days (configurable)
+  - Automatic caching on all fetches
+  - Returns: from_cache: true/false flag
+  ↓ (cache miss)
+Layer 5: Fresh Fetch from YouTube
   - Vocaminary API: 2-3s
-  - Local yt-dlp: 3-5s
+  - Cached automatically in vocabumin-api SQLite
   ↓
-Store in all layers for next time
+Store in local caches (Memory + IndexedDB)
 ```
 
-**Two subtitle sources:**
+**Subtitle sources:**
 1. **Vocaminary API** (default): `https://api.vocaminary.com/transcript/{videoId}`
-   - Cloud-based, shared cache
-   - Faster for popular videos
+   - VPS-hosted with 90-day SQLite cache
+   - Faster for repeated requests
    - No local setup required
+   - Includes cache statistics
 
 2. **Local yt-dlp** (optional): `http://localhost:5000/extract-subs-json3`
    - Privacy-focused (no data leaves machine)
@@ -429,7 +434,14 @@ eventBus.on('myCustomEvent', (data) => {
 
 Test Vocaminary API directly:
 ```bash
+# First request (should fetch fresh)
 curl https://api.vocaminary.com/transcript/dQw4w9WgXcQ
+
+# Second request (should return from_cache: true)
+curl https://api.vocaminary.com/transcript/dQw4w9WgXcQ
+
+# Check cache statistics
+curl https://api.vocaminary.com/cache/stats
 ```
 
 Test local yt-dlp server:
@@ -491,7 +503,7 @@ stateManager.setActive(true);
 
 - **Memory cache:** Last 3 videos only (cleared on page unload)
 - **IndexedDB:** 7 days (auto-cleanup via timestamp check)
-- **Server cache:** 30 days (managed by Vocaminary API)
+- **Vocabumin-API cache:** 90 days (configurable in VPS .env file - see DEPLOYMENT.md)
 - **Python server:** 1 hour (configurable in yt-dlp-server.py)
 
 ### Extension Popup vs Settings Page
@@ -620,15 +632,34 @@ console.log({
 
 ## API Integration
 
-### Vocaminary Cloud API
+### Vocaminary Cloud API (Vocabumin-API)
 
 Base URL: `https://api.vocaminary.com`
 
-**Endpoints:**
-- `GET /transcript/{videoId}` - Fetch subtitles (with caching)
+**Main Endpoints:**
+- `GET /transcript/{videoId}?lang=en` - Fetch subtitles (includes 90-day SQLite cache)
 - `GET /health` - API health check
 
+**Cache Management Endpoints (v2.0.0):**
+- `GET /cache/stats` - Cache statistics (total cached, hits, popular videos)
+- `POST /cache/cleanup` - Remove expired cache entries
+- `DELETE /cache/clear` - Clear entire cache (admin only)
+
+**Response Format:**
+```json
+{
+  "success": true,
+  "video_id": "dQw4w9WgXcQ",
+  "transcript": { ... },
+  "from_cache": true,  // NEW: indicates if served from cache
+  "age_minutes": 45,   // NEW: cache age
+  "hit_count": 12      // NEW: number of times cached entry was accessed
+}
+```
+
 Authentication: None required (public API)
+
+**Deployment:** See `vocabumin-api/DEPLOYMENT.md` for VPS setup instructions
 
 ### Vocaminary Cloud API
 

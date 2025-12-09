@@ -258,68 +258,35 @@ class SubtitleManager {
             };
         }
 
-        // STEP 3: No local cache - check server cache and rate limits
-        this.log('debug', `☁️ Checking server cache and limits...`);
+        // STEP 3: No local cache - check rate limits only
+        this.log('debug', `☁️ Checking rate limits...`);
 
-        const serverResponse = await this.checkCacheAndLimits(videoId);
+        const rateLimitCheck = await this.checkRateLimits(videoId);
 
-        // Server cache hit
-        if (serverResponse.cached) {
-            const elapsed = (performance.now() - startTime).toFixed(1);
-
-            this.stats.serverHits++;
-            this.log('info', `☁️ Server HIT | Hits: ${serverResponse.hit_count} | ${elapsed}ms`);
-
-            const subtitles = serverResponse.subtitles;
-            const captionData = {
-                language: subtitles.language || 'en',
-                source: 'server_cache'
-            };
-
-            this.addToMemoryCache(videoId, subtitles.captions || subtitles, captionData);
-            this.saveToIndexedDB(videoId, {
-                captions: subtitles.captions || subtitles,
-                captionData
-            });
-
-            // No logging for cached loads - doesn't count toward usage
-
-            return {
-                captions: subtitles.captions || subtitles,
-                captionData,
-                source: 'server_cache',
-                cached: true,
-                hit_count: serverResponse.hit_count,
-                age_days: serverResponse.age_days
-            };
-        }
-
-        // STEP 4: Check rate limits (only for fresh fetches)
-        if (!serverResponse.allowed) {
-            const waitMin = Math.ceil(serverResponse.waitTime / 60);
-            this.log('warn', `⏰ Rate Limited | ${serverResponse.reason} | Wait ${waitMin}m`);
-            this.showRateLimitMessage(`Wait ${waitMin} minutes`, serverResponse.usage);
+        // STEP 4: Check rate limits
+        if (!rateLimitCheck.allowed) {
+            const waitMin = Math.ceil(rateLimitCheck.waitTime / 60);
+            this.log('warn', `⏰ Rate Limited | ${rateLimitCheck.reason} | Wait ${waitMin}m`);
+            this.showRateLimitMessage(`Wait ${waitMin} minutes`, rateLimitCheck.usage);
 
             return {
                 error: `Rate limited. Wait ${waitMin} minutes.`,
-                wait_time: serverResponse.waitTime,
-                usage: serverResponse.usage
+                wait_time: rateLimitCheck.waitTime,
+                usage: rateLimitCheck.usage
             };
         }
 
-        this.showUsageStatus(serverResponse.usage);
+        this.showUsageStatus(rateLimitCheck.usage);
 
-        // STEP 5: Fetch from source (only if not cached and rate limits allow)
+        // STEP 5: Fetch from vocabumin-api (includes 90-day cache check)
         this.stats.misses++;
-        this.log('info', `📡 Fetch | From source (${videoId})`);
-        
+        this.log('info', `📡 Fetch | From vocabumin-api (with cache) (${videoId})`);
+
         const fetchResult = await this.fetchFromYtDlp(videoId);
-        
+
         if (!fetchResult || !fetchResult.success) {
             const elapsed = (performance.now() - startTime).toFixed(1);
             this.log('error', `❌ Fetch | Failed | ${elapsed}ms`);
-
-            // No logging for failed fetches - shouldn't count toward usage
 
             return {
                 error: 'Failed to fetch subtitles',
@@ -327,26 +294,30 @@ class SubtitleManager {
             };
         }
 
-        // STEP 6: Store fresh fetch in all caches
+        // Check if result was from vocabumin-api cache
+        const fromCache = fetchResult.from_cache || false;
         const fetchSource = fetchResult.captionData?.source || 'unknown';
         const elapsed = (performance.now() - startTime).toFixed(1);
-        
-        this.log('info', `✅ Fetch | Success (${fetchSource}) | ${elapsed}ms`);
-        
+
+        if (fromCache) {
+            this.stats.serverHits++;
+            this.log('info', `☁️ Vocabumin-API Cache HIT | ${elapsed}ms`);
+        } else {
+            this.log('info', `✅ Fetch | Fresh from YouTube (${fetchSource}) | ${elapsed}ms`);
+        }
+
+        // STEP 6: Store in local caches (memory + IndexedDB)
         this.addToMemoryCache(videoId, fetchResult.captions, fetchResult.captionData);
         this.saveToIndexedDB(videoId, fetchResult);
-        
-        // Background ops
-        Promise.all([
-            this.storeInServerCache(videoId, videoTitle, channelName, fetchResult),
-            this.logFetch(videoId, videoTitle, true, fetchSource, false)
-        ]).catch(() => {});
-        
+
+        // Background logging
+        this.logFetch(videoId, videoTitle, true, fetchSource, fromCache).catch(() => {});
+
         // Return with proper source and cached flag
         return {
             ...fetchResult,
-            source: fetchSource, // Preserve actual source (vocaminary or local-ytdlp)
-            cached: false // This is a fresh fetch, not from cache
+            source: fromCache ? 'vocabumin_api_cache' : fetchSource,
+            cached: fromCache
         };
     }
 
@@ -369,16 +340,16 @@ class SubtitleManager {
     }
 
     /**
-     * Combined cache + rate limit check
+     * Check rate limits only (yourvocab backend)
      */
-    async checkCacheAndLimits(videoId) {
+    async checkRateLimits(videoId) {
         try {
             const token = await this.getAuthToken();
             if (!token) {
-                this.log('debug', '☁️ Server | No token, allowing fetch');
-                return { cached: false, allowed: true, usage: null };
+                this.log('debug', '☁️ Rate Limit | No token, allowing fetch');
+                return { allowed: true, usage: null };
             }
-            
+
             const response = await fetch(`${this.apiBase}/subtitles/fetch-or-cache`, {
                 method: 'POST',
                 headers: {
@@ -387,17 +358,24 @@ class SubtitleManager {
                 },
                 body: JSON.stringify({ videoId, language: 'en' })
             });
-            
+
             if (response.ok || response.status === 429) {
-                return await response.json();
+                const data = await response.json();
+                // Ignore cache data, only use rate limit info
+                return {
+                    allowed: data.allowed !== false,
+                    waitTime: data.waitTime || 0,
+                    reason: data.reason || '',
+                    usage: data.usage || null
+                };
             }
-            
-            this.log('warn', `☁️ Server | HTTP ${response.status}`);
-            return { cached: false, allowed: true, usage: null };
-            
+
+            this.log('warn', `☁️ Rate Limit | HTTP ${response.status}`);
+            return { allowed: true, usage: null };
+
         } catch (error) {
-            this.log('error', '☁️ Server | Check failed', error);
-            return { cached: false, allowed: true, usage: null };
+            this.log('error', '☁️ Rate Limit | Check failed', error);
+            return { allowed: true, usage: null };
         }
     }
 
