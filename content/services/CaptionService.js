@@ -166,7 +166,7 @@ class Caption {
             if (result.source === 'local_cache' || result.source === 'memory') {
                 const ageMinutes = result.age_minutes || Math.floor((Date.now() - (result.cachedAt || Date.now())) / 60000);
                 this.notifications.showCacheStatus('cached', { ageMinutes });
-            } else if (result.source === 'server_cache') {
+            } else if (result.source === 'server_cache' || result.source === 'vocabumin_api_cache') {
                 this.notifications.showCacheStatus('server_cache');
             } else {
                 // Cached but from vocaminary or local-ytdlp (first fetch, now cached)
