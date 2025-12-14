@@ -350,7 +350,7 @@ class SubtitleManager {
                 return { allowed: true, usage: null };
             }
 
-            const response = await fetch(`${this.apiBase}/subtitles/fetch-or-cache`, {
+            const response = await fetch(`${this.apiBase}/subtitles/check-limit`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -359,9 +359,8 @@ class SubtitleManager {
                 body: JSON.stringify({ videoId, language: 'en' })
             });
 
-            if (response.ok || response.status === 429) {
+            if (response.ok) {
                 const data = await response.json();
-                // Ignore cache data, only use rate limit info
                 return {
                     allowed: data.allowed !== false,
                     waitTime: data.waitTime || 0,
@@ -370,11 +369,24 @@ class SubtitleManager {
                 };
             }
 
+            if (response.status === 429) {
+                const data = await response.json().catch(() => ({}));
+                this.log('warn', `☁️ Rate Limit | Rate limited (${data.reason || 'Too many requests'})`);
+                return {
+                    allowed: false,
+                    waitTime: data.waitTime || 0,
+                    reason: data.reason || 'Rate limit exceeded',
+                    usage: data.usage || null
+                };
+            }
+
             this.log('warn', `☁️ Rate Limit | HTTP ${response.status}`);
+            // Allow fetch to continue on other errors (fallthrough to vocabumin-api)
             return { allowed: true, usage: null };
 
         } catch (error) {
             this.log('error', '☁️ Rate Limit | Check failed', error);
+            // Allow fetch to continue on network errors (fallthrough to vocabumin-api)
             return { allowed: true, usage: null };
         }
     }

@@ -216,44 +216,101 @@ class SimplePopupManager {
                 this.updateUsageDisplay(data.usage, data.remaining, data.allowed, data.waitTime, data.reason);
             } else if (response.status === 429) {
                 // Rate limited
-                const data = await response.json();
-                this.updateUsageDisplay(data.usage, null, false, data.waitTime, data.reason);
+                try {
+                    const data = await response.json();
+
+                    // If no usage data in 429 response, create fallback showing limits are hit
+                    const usageData = data.usage || {
+                        burst: "2/2",
+                        hourly: "5/5",
+                        daily: "20/20"
+                    };
+
+                    this.updateUsageDisplay(usageData, null, false, data.waitTime, data.reason);
+                } catch (jsonError) {
+                    console.error("[YT Popup] Failed to parse 429 response:", jsonError);
+                    // If JSON parsing fails, show fallback with limits maxed out
+                    this.updateUsageDisplay(
+                        {
+                            burst: "2/2",
+                            hourly: "5/5",
+                            daily: "20/20"
+                        },
+                        null,
+                        false,
+                        300,
+                        "Rate limit exceeded"
+                    );
+                }
             } else {
                 console.error("[YT Popup] API error:", response.status);
+                // Show fallback for unknown errors
+                this.updateUsageDisplay(
+                    {
+                        burst: "?/2",
+                        hourly: "?/5",
+                        daily: "?/20"
+                    },
+                    null,
+                    true,
+                    0,
+                    ""
+                );
             }
         } catch (error) {
             console.error("[YT Popup] Error loading usage limits:", error);
+            // Network error - show fallback
+            this.updateUsageDisplay(
+                {
+                    burst: "?/2",
+                    hourly: "?/5",
+                    daily: "?/20"
+                },
+                null,
+                true,
+                0,
+                ""
+            );
         }
     }
 
     updateUsageDisplay(usage, remaining, allowed = true, waitTime = 0, reason = "") {
-        if (!usage) return;
+        // Update usage bars if data is available
+        if (usage) {
+            // Update burst limit (5 minutes)
+            this.updateProgressBar(this.subtitleCount, this.subtitleBar, this.subtitlePercent, usage.burst);
 
-        // Update burst limit (5 minutes)
-        this.updateProgressBar(this.subtitleCount, this.subtitleBar, this.subtitlePercent, usage.burst);
+            // Update hourly limit
+            this.updateProgressBar(this.wordCount, this.wordBar, this.wordPercent, usage.hourly);
 
-        // Update hourly limit
-        this.updateProgressBar(this.wordCount, this.wordBar, this.wordPercent, usage.hourly);
+            // Update daily limit
+            this.updateProgressBar(this.dailyCount, this.dailyBar, this.dailyPercent, usage.daily);
+        }
 
-        // Update daily limit
-        this.updateProgressBar(this.dailyCount, this.dailyBar, this.dailyPercent, usage.daily);
-
-        // Show wait time if rate limited
+        // Always show rate limit warning if not allowed, even without usage data
         if (!allowed && waitTime > 0) {
             this.showRateLimitWarning(waitTime, reason);
-        } else {
-            this.hideRateLimitWarning();
+            return; // Exit early since we're rate limited
         }
+
+        if (!usage) return;
+
+        // Hide rate limit warning if everything is OK
+        this.hideRateLimitWarning();
     }
 
     updateProgressBar(countElement, barElement, percentElement, usageString) {
-        const [used, total] = usageString.split("/").map(Number);
+        const [usedStr, totalStr] = usageString.split("/");
+        const used = usedStr === "?" ? 0 : Number(usedStr);
+        const total = Number(totalStr);
         const percent = Math.round((used / total) * 100);
 
         countElement.textContent = `${usageString}`;
-        barElement.style.width = `${percent}%`;
 
-        this.updateBarColor(barElement, percent);
+        // If unknown usage (?), show 0% bar
+        barElement.style.width = `${isNaN(percent) ? 0 : percent}%`;
+
+        this.updateBarColor(barElement, isNaN(percent) ? 0 : percent);
     }
 
     showRateLimitWarning(waitTime, reason) {

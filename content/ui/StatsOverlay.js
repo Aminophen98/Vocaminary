@@ -219,6 +219,22 @@ class StatsOverlay {
             if (response.ok) {
                 const data = await response.json();
                 return this.parseUsageData(data.usage);
+            } else if (response.status === 429) {
+                // Rate limited - try to parse response for usage data
+                try {
+                    const data = await response.json();
+                    if (data.usage) {
+                        return this.parseUsageData(data.usage);
+                    }
+                } catch (e) {
+                    // Silent fail - response body not parseable
+                }
+                // Return maxed out limits to indicate rate limit
+                return {
+                    burst: { used: 2, total: 2 },
+                    hourly: { used: 5, total: 5 },
+                    daily: { used: 20, total: 20 }
+                };
             }
         } catch (error) {
             this.logger.error('Error fetching usage limits:', error);

@@ -41,6 +41,7 @@ chrome.action.onClicked.addListener(async (tab) => {
             console.log('[Background] Stats overlay toggle message sent');
         } catch (error) {
             console.error('[Background] Error sending toggle message:', error);
+            // If content script not ready, just log the error (expected after reload)
         }
     } else {
         // Not on YouTube - open the web app dashboard
