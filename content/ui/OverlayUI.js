@@ -795,31 +795,9 @@ class PlayerIntegration {
                 
                 // Check server status
                 const serverRunning = await this.serverManager.checkServerConnection();
-                
+
                 if (!serverRunning) {
-                    // Need to start server
-                    this.updatePlayerButton(button, 'loading', 'Starting server...');
-                    
-                    // Send message to extension to start server
-                    const response = await this.overlay.sendToExtension('START_SERVER');
-                    
-                    if (!response.success) {
-                        throw new Error('Failed to start server');
-                    }
-                    
-                    // Wait for server to be ready
-                    let attempts = 0;
-                    while (attempts < 10) {
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-                        if (await this.serverManager.checkServerConnection()) {
-                            break;
-                        }
-                        attempts++;
-                    }
-                    
-                    if (attempts >= 10) {
-                        throw new Error('Server failed to start');
-                    }
+                    throw new Error('Local server not running. Please start it manually: python yt-dlp-server.py');
                 }
             } else {
                 // Using VPS - skip local server check

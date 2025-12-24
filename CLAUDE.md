@@ -707,7 +707,7 @@ Used for word definitions. Two modes:
 
 ### Extension (Zero External Dependencies)
 - Pure vanilla JavaScript
-- Chrome APIs: `storage`, `scripting`, `activeTab`, `nativeMessaging`
+- Chrome APIs: `storage`, `scripting`, `activeTab`
 - No npm packages, no build step, no bundler
 
 ### Python Server (Optional)

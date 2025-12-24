@@ -58,29 +58,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendResponse({ success: true });
         return true;
     }
-
-    if (request.type === 'CONTROL_SERVER') {
-        console.log('[Background] Sending to native host:', request.command);
-        
-        chrome.runtime.sendNativeMessage(
-            'com.ytsubtitle.launcher',
-            { command: request.command },
-            (response) => {
-                console.log('[Background] Native response:', response);
-                console.log('[Background] Last error:', chrome.runtime.lastError);
-                
-                if (chrome.runtime.lastError) {
-                    sendResponse({ 
-                        success: false, 
-                        error: chrome.runtime.lastError.message 
-                    });
-                } else {
-                    sendResponse({ success: true, ...response });
-                }
-            }
-        );
-        return true; // Keep channel open
-    }
     
     if (request.action === 'openSettings') {
         chrome.tabs.create({
@@ -113,48 +90,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
         default:
             console.log('[Background] Unknown message type:', request.type);
-    }
-
-
-    if (request.type === 'CONTROL_SERVER') {
-        chrome.runtime.sendNativeMessage(
-            'com.ytsubtitle.launcher',
-            { command: request.command },
-            (response) => {
-                if (chrome.runtime.lastError) {
-                    sendResponse({ 
-                        success: false, 
-                        error: chrome.runtime.lastError.message 
-                    });
-                } else {
-                    sendResponse({ success: true, ...response });
-                }
-            }
-        );
-        return true; // Keep channel open
-    }
-
-    // Add this to your message listener
-    if (request.type === 'START_SERVER') {
-    // Start server via native messaging
-    chrome.runtime.sendNativeMessage(
-        'com.ytsubtitle.launcher',
-        { command: 'start' },
-        (response) => {
-            if (chrome.runtime.lastError) {
-                sendResponse({ 
-                    success: false, 
-                    error: chrome.runtime.lastError.message 
-                });
-            } else {
-                sendResponse({ 
-                    success: true, 
-                    ...response 
-                });
-            }
-        }
-    );
-    return true; // Keep channel open
     }
 });
 

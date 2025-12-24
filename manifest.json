@@ -1,16 +1,14 @@
 {
   "manifest_version": 3,
   "name": "Vocaminary",
-  "version": "0.2.1",
+  "version": "1.0.1",
   "description": "Learn languages naturally on YouTube. Word-perfect subtitles with instant AI definitions for every word you click.",
   "author": "Aminophen",
   "homepage_url": "https://vocaminary.com",
 
   "permissions": [
     "activeTab",
-    "storage",
-    "scripting",
-    "nativeMessaging"
+    "storage"
   ],
 
   "host_permissions": [
